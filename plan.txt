@@ -1,0 +1,24 @@
+things I want in this game
+
+Players
+Club
+Youth Development
+Managers
+European Leagues?
+
+
+To Do Next
+Turn Fixtures into a class
+	add stats 
+	times for games
+	location of games
+
+Add Players
+	age
+	ability
+	potential
+
+Add Club stats
+	Transfer Budget
+	home ground
+	

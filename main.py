@@ -1,21 +1,18 @@
 import random
 import time
 from prettytable import PrettyTable
-import operator
 import pandas as pd
 import numpy 
 
 from game.team import Team
 from game.player import Player
 
-
 class Manager(object):
-	"""docstring for Manager"""
-	def __init__(self, name, ability):
-		super(Manager, self).__init__()
-		self.arg = arg
-		self.name = name
-		self.ability = ability
+    """docstring for Manager"""
+    def __init__(self, name, ability):
+        super(Manager, self).__init__()
+        self.name = name
+        self.ability = ability
 
 class Fixture(object):
 	"""docstring for fixture"""
@@ -40,7 +37,7 @@ def advancedMatchEngine(fixture):
 	goalTeamB = 0
 	initial = 0
 	delta = 0
-	if(teamA.rating>teamB.rating):
+	if teamA.rating>teamB.rating:
 		initial =  (teamA.rating/teamB.rating) - 1
 		delta = (teamA.rating - teamB.rating) /500
 	else:
@@ -49,15 +46,15 @@ def advancedMatchEngine(fixture):
 
 	# team A is the home team and thus recieves a little bonus
 	initial += 0.025
-	if(playerView == True):
+	if playerView == True:
 		print(teamA.name,"v",teamB.name, "at",teamA.home)
 		print(teamA.name," rating is ", teamA.rating)
 		print(teamB.name," rating is ", teamB.rating)
 
 	# setup to make sure there are no instant goals
-	if(initial>0.95):
+	if initial>0.95:
 		initial = 0.95
-	if(initial<-0.95):
+	elif initial<-0.95:
 		initial = -0.95
 
 	state = initial
@@ -65,17 +62,17 @@ def advancedMatchEngine(fixture):
 	for moments in range(91):
 		n = numpy.random.normal(delta,0.2)
 		state+=n
-		if(state>1):
+		if state>1:
 			goalTeamA+=1
 			state = initial
-			if(playerView == True):
+			if playerView == True:
 				print('GOAL!',teamA.name, "in the", moments,"minute")
 				print('Score is: ',goalTeamA,'-',goalTeamB)
 
-		elif(state<-1):
+		elif state<-1:
 			goalTeamB+=1
 			state = initial
-			if(playerView == True):
+			if playerView == True:
 				print('GOAL!',teamB.name, "in the", moments,"minute")
 				print('Score is: ',goalTeamA,'-',goalTeamB)
 
@@ -87,16 +84,16 @@ def advancedMatchEngine(fixture):
 	print("Final Score is: ",goalTeamA,"-",goalTeamB)
 	# comment out below when testing
 	#
-	if(playerView == True):
+	if playerView == True:
 		#time.sleep(2)
 		print("**********")
 
 	ra = 0
 	rb = 0
-	if(goalTeamA>goalTeamB):
+	if goalTeamA>goalTeamB:
 		ra = 1
 		rb = -1
-	elif(goalTeamB>goalTeamA):
+	elif goalTeamB>goalTeamA:
 		rb = 1
 		ra = -1
 
@@ -105,7 +102,7 @@ def advancedMatchEngine(fixture):
 	# team B
 	teamB.result(rb,goalTeamB,goalTeamA)
 
-def createPlayer(t = "senior"):
+def createPlayer(player_type = "senior"):
 	firstNames =  open("data/firstnames.txt", "r").read().splitlines()
 	lastNames =  open("data/lastnames.txt", "r").read().splitlines()
 
@@ -114,46 +111,37 @@ def createPlayer(t = "senior"):
 
 	first = firstNames[a]
 	last = lastNames[b]
-	age = random.randrange(13)+18
-	if(t == "youth"):
+	if player_type == "youth":
 		age = random.randrange(3)+15
-
-	potential = 0
-	ability = numpy.random.normal(50+age,5)
-	if(t == "youth"):
 		ability = numpy.random.normal(60,3)
+		potential = numpy.random.normal(78,5)
 
-	if(ability>99):
+	elif player_type == "senior":
+		age = random.randrange(13)+18
+		ability = numpy.random.normal(50+age,5)
+		potential = ability+numpy.random.normal((30-age),2)
+
+	if ability>99 :
 		ability = 98
 		potential = 99
-
-
-	while(potential<=ability):
-		potential = ability+numpy.random.normal((30-age),2)
-		if(t == "youth"):
-			potential = numpy.random.normal(78,5)
-		if(potential>99):
-			potential = 99
-		if(potential<ability):
-			potential = ability
 
 	ability = round(ability,2)
 	potential = round(potential,2)
 
 	position = ""
 	pos = random.randrange(11)
-	if(pos==0):
+	if pos==0:
 		position = "GK"
-	if(1<=pos<=4):
+	if 1<=pos<=4:
 		position = "DEF"
-	if(5<=pos<=8):
+	if 5<=pos<=8:
 		position = "MID"
-	if(9<=pos<=10):
+	if 9<=pos<=10:
 		position = "ATT"
 
-	p = Player(first + " " + last, age,position,ability,potential)
+	player = Player(first + " " + last, age,position,ability,potential)
 
-	return p
+	return player
 
 def getTeamData():
 	data = pd.read_csv('data/teams.csv')
