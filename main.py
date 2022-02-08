@@ -165,18 +165,18 @@ def create_new_game():
             new_player = create_player('senior')
             if new_player.position == "GK":
                 gk_count+=1
-            team_players[i].addPlayer(new_player)
+            team_players[i].add_player(new_player)
             player_count+=1
         while gk_count<2:
             new_player = create_player()
             if new_player.position == "GK":
-                team_players[i].addPlayer(new_player)
+                team_players[i].add_player(new_player)
                 gk_count +=1
 
         youth_player_count = 0
         while youth_player_count<12:
             new_player = create_player('youth')
-            team_players[i].addYouthPlayer(new_player)
+            team_players[i].add_youth_player(new_player)
             youth_player_count +=1
         teams_created+=1
         print('Created',teams_created,"Teams")
@@ -186,11 +186,11 @@ def get_worst_youth_player(team):
     """gets the worst player in the team
     they will be let go and better youth players
     will be automattically added"""
-    while len(team.youthTeam)<1:
-        team.youthTeam.append(Player("",0,"GK",1,1))
+    while len(team.youth_team)<1:
+        team.youth_team.append(Player("",0,"GK",1,1))
     worst_pot = 1000
     worst = 0
-    for i in team.youthTeam:
+    for i in team.youth_team:
         if i.potential<worst_pot:
             worst = i
             worst_pot = i.potential
@@ -204,16 +204,16 @@ def youth_intake(teams):
         while youth_player_count <12:
             new_youth_player = create_player('youth')
             k = get_worst_youth_player(i)
-            if len(i.youthTeam)<12:
-                i.addYouthPlayer(new_youth_player)
+            if len(i.youth_team)<12:
+                i.add_youth_player(new_youth_player)
                 if i.controlled is True:
                     print("Added New Player",new_youth_player.name,
                     "Ability", new_youth_player.ability,
                     "Potential",new_youth_player.potential)
             else:
                 if new_youth_player.potential>k.potential:
-                    i.youthTeam.remove(k)
-                    i.addYouthPlayer(new_youth_player)
+                    i.youth_team.remove(k)
+                    i.add_youth_player(new_youth_player)
                     if i.controlled is True:
                         print("Added New Player",new_youth_player.name,
                         "Ability",new_youth_player.ability,
@@ -277,7 +277,7 @@ def play_games(fixtures_week):
 
 def show_table(teams):
     """prints out the season table"""
-    newlist = sorted(teams, key=lambda x: (x.points,x.goalDifference), reverse=True)
+    newlist = sorted(teams, key=lambda x: (x.points,x.goal_difference), reverse=True)
     table = PrettyTable(['P','Team','Played','Won','Drawn','Lost','Points','GF','GA','GD'])
     index = 1
     for i in newlist:
@@ -285,8 +285,8 @@ def show_table(teams):
         if i.controlled is True:
             team_name+="**"
         #print(i.name,i.points,i.wins,i.draws,i.losses)
-        table.add_row([index,team_name,i.matchesPlayed,i.wins,i.draws,
-            i.losses,i.points,i.goalsFor,i.goalsAgainst,i.goalDifference])
+        table.add_row([index,team_name,i.matches_played,i.wins,i.draws,
+            i.losses,i.points,i.goalsFor,i.goalsAgainst,i.goal_difference])
         index+=1
     print(table)
 
@@ -326,7 +326,7 @@ def main():
     #m=tkinter.Tk()
     teams = create_new_game()
     for i in teams:
-        i.selectTeam()
+        i.select_team()
     fixtures = create_fixtures(teams)
     player_team = 0
     season = 0
@@ -342,7 +342,7 @@ def main():
         if week == len(fixtures):
             season+=1
             print('END OF SEASON',season)
-            player_team.printAllPlayers()
+            player_team.print_all_players()
             show_table(teams)
             end_of_season(player_team)
             print('Reseting Season.....')
@@ -355,7 +355,7 @@ def main():
         for i in teams:
             if i != player_team:
                 check_goalkeeper(i)
-                i.selectTeam()
+                i.select_team()
         print('WEEK',week+1)
         print('Press 1 to play next round')
         print('Press 2 to check the Table')
@@ -370,19 +370,19 @@ def main():
             week+=1
             for i in teams:
                 i.update()
-                i.calculateTeamRating()
+                i.calculate_team_rating()
             if week==22:
                 youth_intake(teams)
         if user_input==str(2):
             show_table(teams)
         if user_input==str(3):
-            player_team.printBestTeam()
+            player_team.print_best_team()
         if user_input==str(4):
-            player_team.printAllPlayers()
+            player_team.print_all_players()
         if user_input==str(5):
-            player_team.printYouthTeam()
+            player_team.print_youth_team()
         if user_input==str(6):
-            player_team.customSelect()
+            player_team.custom_team_select()
         if user_input=='x':
             break
 
